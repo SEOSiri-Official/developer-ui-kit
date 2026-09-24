@@ -10,7 +10,7 @@ export interface UniversalSaaSWidgetProps {
   mcpEndpoint?: string; // e.g. https://rovomcp.seosiri.com
   onValidateToken?: (token: string) => Promise<boolean> | boolean;
   onProTask?: () => void;
-  onTelemetryEvent?: (event: { type: string; payload: any }) => void;
+  onTelemetryEvent?: (event: { type: string; payload: any; timestamp?: string }) => void;
 }
 
 export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
