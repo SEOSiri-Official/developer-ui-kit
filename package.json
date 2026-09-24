@@ -1,6 +1,6 @@
 {
   "name": "@seosiri/developer-ui-kit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Universal white-label React UI kit & flexible licensing guard for enterprise software, SaaS dashboards, and developer tools.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
