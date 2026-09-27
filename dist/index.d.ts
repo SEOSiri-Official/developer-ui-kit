@@ -8,6 +8,7 @@ interface UniversalSaaSWidgetProps {
     theme?: 'dark' | 'light';
     storageKey?: string;
     mcpEndpoint?: string;
+    salesEmail?: string;
     onValidateToken?: (token: string) => Promise<boolean> | boolean;
     onProTask?: () => void;
     onTelemetryEvent?: (event: {
