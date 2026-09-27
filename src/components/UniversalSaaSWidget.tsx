@@ -8,6 +8,7 @@ export interface UniversalSaaSWidgetProps {
   theme?: 'dark' | 'light';
   storageKey?: string;
   mcpEndpoint?: string; // e.g. https://rovomcp.seosiri.com
+  salesEmail?: string;  // e.g. badhan_pbn@yahoo.com
   onValidateToken?: (token: string) => Promise<boolean> | boolean;
   onProTask?: () => void;
   onTelemetryEvent?: (event: { type: string; payload: any; timestamp?: string }) => void;
@@ -15,12 +16,13 @@ export interface UniversalSaaSWidgetProps {
 
 export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
   productName,
-  productVersion = '1.0.1',
+  productVersion = '1.0.3',
   logoInitial = 'S',
   accentColor = '#0284c7',
   theme = 'dark',
   storageKey = 'seosiri_app_license_token',
   mcpEndpoint,
+  salesEmail = 'badhan_pbn@yahoo.com',
   onValidateToken,
   onProTask,
   onTelemetryEvent
@@ -31,6 +33,7 @@ export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('Standard License Active');
   const [latency, setLatency] = useState<number | null>(null);
+  const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(false);
 
   const isDark = theme === 'dark';
 
@@ -43,7 +46,7 @@ export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
           setIsLicensed(true);
           setTier('ENTERPRISE');
           setMessage('Enterprise License Verified');
-        } else if (saved.startsWith('PRO_')) {
+        } else if (saved.startsWith('PRO_') || saved.startsWith('UIKIT_')) {
           setIsLicensed(true);
           setTier('PRO');
           setMessage('Pro License Verified');
@@ -83,7 +86,7 @@ export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
       if (onValidateToken) {
         isValid = await onValidateToken(token);
       } else {
-        isValid = token.startsWith('PRO_') || token.startsWith('ENT_');
+        isValid = token.startsWith('PRO_') || token.startsWith('ENT_') || token.startsWith('UIKIT_');
       }
 
       if (isValid) {
@@ -140,6 +143,19 @@ export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
     emitTelemetry('CONFIG_DOWNLOADED', {});
   };
 
+  const handleOpenPayoneerCheckout = () => {
+    const subject = encodeURIComponent(`SEOSiri Pro API License Purchase - ${productName}`);
+    const body = encodeURIComponent(
+      `Hello SEOSiri Enterprise Desk,\n\n` +
+      `I would like to purchase a Pro API License ($49/mo) for my application (${productName}).\n` +
+      `Please issue my cryptographically signed HMAC-SHA256 API key.\n\n` +
+      `Payment will be transferred via Payoneer to: ${salesEmail}\n\n` +
+      `Thank you!`
+    );
+    window.open(`mailto:${salesEmail}?subject=${subject}&body=${body}`, '_blank');
+    emitTelemetry('CHECKOUT_INITIATED', { product: productName });
+  };
+
   return (
     <div style={{
       padding: '20px',
@@ -176,9 +192,8 @@ export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
 
       {/* Action / Input Zone */}
       {!isLicensed ? (
-        <form onSubmit={handleActivate} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
-          <label style={{ fontSize: '11px', color: '#94a3b8', fontFamily: 'monospace' }}>Enter Enterprise License Token:</label>
-          <div style={{ display: 'flex', gap: '6px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
+          <form onSubmit={handleActivate} style={{ display: 'flex', gap: '6px' }}>
             <input 
               type="text" 
               placeholder="PRO_... or ENT_..." 
@@ -193,8 +208,38 @@ export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
             >
               {loading ? '...' : 'Verify'}
             </button>
-          </div>
-        </form>
+          </form>
+
+          {/* Sales Lead Acquisition Hook */}
+          <button
+            onClick={() => setShowUpgradeModal(!showUpgradeModal)}
+            style={{ width: '100%', padding: '9px', background: 'linear-gradient(135deg, #059669, #0284c7)', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
+          >
+            ⚡ Upgrade to Pro Gateway ($49/mo)
+          </button>
+
+          {/* Payoneer Checkout Drawer */}
+          {showUpgradeModal && (
+            <div style={{ background: isDark ? '#020617' : '#f1f5f9', padding: '12px', borderRadius: '8px', border: '1px solid #059669', fontSize: '11px', fontFamily: 'monospace' }}>
+              <p style={{ margin: '0 0 6px 0', color: '#34d399', fontWeight: 'bold' }}>Instant Payoneer API Checkout:</p>
+              <p style={{ margin: '0 0 8px 0', color: '#cbd5e1' }}>Transfer $49/mo to <strong>{salesEmail}</strong> and click below to request your signed HMAC key:</p>
+              <button
+                onClick={handleOpenPayoneerCheckout}
+                style={{ width: '100%', padding: '7px', background: '#047857', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '4px' }}
+              >
+                Request Key via Email ✉️
+              </button>
+              <a 
+                href="https://developers.seosiri.com/#key-issuer" 
+                target="_blank" 
+                rel="nofollow noopener noreferrer" 
+                style={{ color: '#38bdf8', display: 'block', textAlign: 'center', textDecoration: 'underline', marginTop: '4px' }}
+              >
+                Open Portal Key Issuer &rarr;
+              </a>
+            </div>
+          )}
+        </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
           <button
@@ -221,10 +266,10 @@ export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
         </div>
       )}
 
-      {/* Footer Branding */}
-      <div style={{ borderTop: `1px solid ${isDark ? '#334155' : '#e2e8f0'}`, paddingTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>
-        <span>SEOSiri UI Kit v1.0.2</span>
-        <a href="https://developers.seosiri.com" target="_blank" rel="noreferrer" style={{ color: accentColor, textDecoration: 'none', fontWeight: 600 }}>
+      {/* Footer Branding with strict nofollow SEO compliance */}
+      <div style={{ borderTop: `1px solid ${isDark ? '#334155' : '#e2e8f0'}`, paddingTop: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>
+        <span>SEOSiri UI Kit v1.0.3</span>
+        <a href="https://developers.seosiri.com" target="_blank" rel="nofollow noopener noreferrer" style={{ color: accentColor, textDecoration: 'none', fontWeight: 600 }}>
           developers.seosiri.com &rarr;
         </a>
       </div>
