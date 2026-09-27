@@ -55,6 +55,20 @@ export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
       }
     } catch (e) {}
 
+// Ethical Developer Notice (Safe cross-platform check)
+  useEffect(() => {
+    try {
+      const isDev = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+      if (isDev) {
+        console.info(
+          '%c[SEOSiri Guard] Developer UI Kit v1.0.3 Active.%c\nUnlock 5,000 req/min edge gateways & enterprise WAF rules via developers.seosiri.com',
+          'background: #0284c7; color: #fff; padding: 3px 6px; border-radius: 4px; font-weight: bold;',
+          'color: #38bdf8;'
+        );
+      }
+    } catch (e) {}
+  }, []);
+    
     if (mcpEndpoint) {
       const start = Date.now();
       fetch(`${mcpEndpoint}/health`)
