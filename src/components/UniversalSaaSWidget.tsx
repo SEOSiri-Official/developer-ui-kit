@@ -34,6 +34,7 @@ export const UniversalSaaSWidget: React.FC<UniversalSaaSWidgetProps> = ({
   const [message, setMessage] = useState<string>('Standard License Active');
   const [latency, setLatency] = useState<number | null>(null);
   const [showCheckoutModal, setShowCheckoutModal] = useState<boolean>(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState<boolean>(false);
 
   const isDark = theme === 'dark';
 
