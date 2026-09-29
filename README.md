@@ -43,3 +43,11 @@ export default function App() {
 ## License
 
 Distributed under the [MIT License](https://github.com/SEOSiri-Official/developer-ui-kit/blob/main/LICENSE).
+
+
+## ❤️ Sponsor This Project
+
+If your organization relies on `@seosiri/developer-ui-kit` for commercial SaaS dashboards, enterprise tools, or AI control planes, you can support our ongoing maintenance and feature development through GitHub Sponsors:
+
+- **Sponsor Development:** [GitHub Sponsors & Funding Portal](https://github.com/sponsors/SEOSiri-Official)
+- **Official Funding Policy:** [.github/FUNDING.yml](.github/FUNDING.yml)
