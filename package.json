@@ -1,6 +1,6 @@
 {
   "name": "@seosiri/developer-ui-kit",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Universal white-label React UI kit & flexible licensing guard for enterprise software, SaaS dashboards, and developer tools.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -24,7 +24,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com"
+    "url": "https://github.com/SEOSiri-Official/developer-ui-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SEOSiri-Official/developer-ui-kit/issues"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
