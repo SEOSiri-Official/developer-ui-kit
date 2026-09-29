@@ -24,7 +24,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SEOSiri-Official/developer-ui-kit.git"
+    "url": "git+https://github.com/SEOSiri-Official/developer-ui-kit.git"
   },
   "bugs": {
     "url": "https://github.com/SEOSiri-Official/developer-ui-kit/issues"
